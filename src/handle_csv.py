@@ -4,14 +4,29 @@ import matplotlib.pyplot as plt
 from .config import region_mapping
 from .handle_data import DataHandler
 import pandas as pd
-
+from .module_tmp import DataProcessor, calculate_stats
 
 class DataVisualizer(DataHandler):
     def __init__(self, config):
         super().__init__(config)
+        self.processor = DataProcessor()  # Add DataProcessor instance
+        
+        # Check for region_mapping
         if "region_mapping" not in config:
             raise ValueError("missing region_mapping")
-        self.region_mapping = config["region_mapping"]  # Use region mapping from the configuration
+        self.region_mapping = config["region_mapping"]
+        
+    def analyze_column(self, column_name):
+        """New method using module_tmp functionality"""
+        if column_name in self.data_df.columns:
+            data = self.data_df[column_name].dropna().tolist()
+            stats = {
+                'mean': calculate_stats(data, 'mean'),
+                'median': calculate_stats(data, 'median'),
+                'lambda_process': self.processor.process_with_lambda(data)
+            }
+            return stats
+        return None
 
     def categorize_airports(self):
         """Map airport codes to their respective regions."""
