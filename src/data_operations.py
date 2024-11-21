@@ -111,7 +111,6 @@ class DataVisualizer(DataHandler):
         plt.xlabel(x_column)
         plt.ylabel(y_column)
 
-        # Rotate y-axis labels
         plt.yticks(rotation=90)
     
         # Adjust legend placement
@@ -132,19 +131,15 @@ class DataVisualizer(DataHandler):
             print(f"Column '{column_name}' not found in the dataset.")
             return pd.DataFrame()
 
-        # Call parent's query_data method to handle common query logic
         filtered_data = super().query_data(column_name, condition)
 
         if filtered_data.empty:
-            return filtered_data  # If no data is returned, we can exit early
-
-        # Now add specific functionality for numeric and string columns
+            return filtered_data  
         if self.data_df[column_name].dtype == 'object' or self.data_df[column_name].dtype.name == 'category':
-            # For string or categorical columns, apply condition like '==', '!=', etc.
-            condition_mask = self.data_df[column_name].apply(lambda x: eval(f"'{x}' {condition}"))
+            
+            condition_mask = self.data_df[column_name].apply(lambda x: eval(f"'{x}' {condition}") if pd.notna(x) else False)
         else:
-            # For numeric columns, apply numeric conditions like '<', '>', '==', etc.
-            condition_mask = self.data_df[column_name].apply(lambda x: eval(f"{x} {condition}"))
+            condition_mask = self.data_df[column_name].apply(lambda x: eval(f"{x} {condition}") if pd.notna(x) else False)
 
         filtered_data = self.data_df[condition_mask]
         print(f"Query successful! {len(filtered_data)} rows found.")
