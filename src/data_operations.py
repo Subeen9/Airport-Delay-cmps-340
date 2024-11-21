@@ -2,7 +2,7 @@ import os
 import seaborn as sns
 import matplotlib.pyplot as plt
 from .config import region_mapping
-from .handle_data import DataHandler
+from .data_management import DataHandler
 import pandas as pd
 from .module_tmp import DataProcessor, calculate_stats
 

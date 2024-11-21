@@ -1,5 +1,5 @@
-from .handle_data import DataHandler  
-from .handle_csv import DataVisualizer
+from .data_management import DataHandler  
+from .data_operations import DataVisualizer
 from .config import DATA_PATH, DEFAULT_COLUMNS, region_mapping
 from .module_tmp import (
     numpy_to_dataframe,
