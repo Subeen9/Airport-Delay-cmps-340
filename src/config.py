@@ -5,7 +5,7 @@ from pathlib import Path
 SRC_DIR = Path(__file__).parent
 
 # Go up one level to the project root and then into the data directory
-DATA_PATH = os.path.abspath(os.path.join(SRC_DIR.parent, 'data', 'airline_delay_2023.csv'))
+DATA_PATH = os.path.abspath(os.path.join(SRC_DIR.parent, 'Input', 'airline_delay_2023.csv'))
 
 # Default columns
 DEFAULT_COLUMNS = [

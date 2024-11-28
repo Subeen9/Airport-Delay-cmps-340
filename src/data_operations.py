@@ -67,7 +67,9 @@ class DataVisualizer(DataHandler):
         plt.xlabel("Region")
         plt.ylabel(column_name)
         plt.xticks(rotation=45)  # Rotate region labels for readability
-        plt.show()
+        
+        # Save the plot to Output folder
+        self.save_plot(f"violin_{column_name}")
 
     def plot_box(self, column_name):
         """Visualize the distribution of a column using a box plot."""
@@ -89,7 +91,9 @@ class DataVisualizer(DataHandler):
         plt.xlabel("Region")
         plt.ylabel(column_name)
         plt.xticks(rotation=45)  # Rotate region labels for readability
-        plt.show()
+        
+        # Save the plot to Output folder
+        self.save_plot(f"box_{column_name}")
 
     def plot_scatter(self, x_column, y_column):
         """Visualize the relationship between two columns using a scatter plot."""
@@ -119,7 +123,8 @@ class DataVisualizer(DataHandler):
         # Reduce the number of ticks
         plt.locator_params(axis='y', nbins=10)
 
-        plt.show()
+        # Save the plot to Output folder
+        self.save_plot(f"scatter_{x_column}_vs_{y_column}")
 
     def query_data(self, column_name, condition):
         """Query data using Boolean indexing for numeric and string columns while reusing parent's query_data."""
@@ -144,3 +149,16 @@ class DataVisualizer(DataHandler):
         filtered_data = self.data_df[condition_mask]
         print(f"Query successful! {len(filtered_data)} rows found.")
         return filtered_data
+
+    def save_plot(self, plot_name):
+        """Helper method to save plots in the Output directory."""
+        output_folder = "Output"  # Directory where the images will be saved
+        if not os.path.exists(output_folder):
+            os.makedirs(output_folder)
+
+        # Save the plot with a unique name
+        output_file = os.path.join(output_folder, f"{plot_name}.png")
+        plt.savefig(output_file)
+        print(f"Plot saved as {output_file}")
+
+        plt.close()

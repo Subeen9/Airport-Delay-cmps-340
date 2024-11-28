@@ -1,4 +1,5 @@
 import pandas as pd
+import os
 import matplotlib.pyplot as plt
 from .config import DATA_PATH, DEFAULT_COLUMNS
 
@@ -21,7 +22,7 @@ class DataHandler:
             self.data_df = pd.DataFrame()
 
     def visualize_delays(self):
-        """Visualize all types of delays in a multi-line plot."""
+        """Visualize all types of delays in a multi-line plot and save the image."""
         if self.data_df is None or self.data_df.empty:
             print("Error: No data loaded to visualize.")
             return
@@ -50,16 +51,30 @@ class DataHandler:
         plt.title('Average Delays by Carrier and Delay Type')
         plt.xlabel('Carrier')
         plt.ylabel('Average Delay (minutes)')
-
         carriers = self.data_df.groupby('carrier_name')['arr_delay'].mean().sort_values(ascending=False).index
         plt.xticks(range(len(carriers)), carriers, rotation=45, ha='right')
         plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left')
         plt.grid(True, linestyle='--', alpha=0.7)
         plt.tight_layout()
-        plt.show()
+
+        # Save the plot as an image file
+        output_folder = "Output"  # Directory where the images will be saved
+        if not os.path.exists(output_folder):
+            os.makedirs(output_folder)
+        
+        # Save the plot with a unique name
+        output_file = os.path.join(output_folder, "average_delays_by_carrier.png")
+        plt.savefig(output_file)
+        print(f"Plot saved as {output_file}")
+
+        # Display the plot in a popup window
+        plt.show()  # Display the plot in a popup window
+
+        # Close the plot
+        plt.close()
 
     def visualize_column(self, column_name):
-        """Visualize data for a given column using a line plot."""
+        """Visualize data for a given column using a line plot and save the image."""
         if self.data_df is None or self.data_df.empty:
             print("Error: No data loaded to visualize.")
             return
@@ -70,16 +85,16 @@ class DataHandler:
 
         data = self.data_df[column_name].dropna()
 
+        plt.figure(figsize=(15, 8))
+
         if data.dtype == 'object' or data.dtype.name == 'category':
             value_counts = data.value_counts().sort_index()
 
-            plt.figure(figsize=(15, 8))
             ax = value_counts.plot(kind="line", marker="o", color="skyblue", linewidth=2)
 
             plt.title(f"Frequency of {column_name} (Line Plot)")
             plt.xlabel(column_name)
             plt.ylabel("Frequency")
-
             plt.xticks(range(len(value_counts)), value_counts.index, rotation=45, ha='right')
             plt.tight_layout()
             plt.grid(True, linestyle='--', alpha=0.7)
@@ -87,7 +102,6 @@ class DataHandler:
             for i, v in enumerate(value_counts):
                 ax.text(i, v, str(v), ha='center', va='bottom')
         else:
-            plt.figure(figsize=(15, 8))
             data.value_counts().sort_index().plot(kind="line", marker="o", color="skyblue", linewidth=2)
             plt.title(f"Frequency of {column_name} (Line Plot)")
             plt.xlabel(column_name)
@@ -96,7 +110,21 @@ class DataHandler:
             plt.grid(True, linestyle='--', alpha=0.7)
             plt.tight_layout()
 
-        plt.show()
+        # Save the plot as an image file
+        output_folder = "Output"  # Directory where the images will be saved
+        if not os.path.exists(output_folder):
+            os.makedirs(output_folder)
+        
+        # Save the plot with a unique name based on column_name
+        output_file = os.path.join(output_folder, f"{column_name}_frequency_plot.png")
+        plt.savefig(output_file)
+        print(f"Plot saved as {output_file}")
+
+        # Display the plot in a popup window
+        plt.show()  # Display the plot in a popup window
+
+        # Close the plot
+        plt.close()
 
     def query_data(self, column_name, condition):
         """Query the data based on a condition."""
