@@ -6,6 +6,7 @@ from .data_management import DataHandler
 import pandas as pd
 from .module_tmp import DataProcessor, calculate_stats
 
+# child
 class DataVisualizer(DataHandler):
     def __init__(self, config):
         super().__init__(config)
@@ -16,6 +17,17 @@ class DataVisualizer(DataHandler):
             raise ValueError("missing region_mapping")
         self.region_mapping = config["region_mapping"]
         
+        # Read CSV file
+        try:
+            self.data_df = pd.read_csv(self.config["DATA_PATH"])
+            print(f"Data loaded successfully from {self.config['DATA_PATH']}")
+        except FileNotFoundError:
+            print(f"Error: File not found at {self.config['DATA_PATH']}")
+            self.data_df = pd.DataFrame()
+        except Exception as e:
+            print(f"Error loading data: {e}")
+            self.data_df = pd.DataFrame()
+    
     def analyze_column(self, column_name):
         """New method using module_tmp functionality"""
         if column_name in self.data_df.columns:
