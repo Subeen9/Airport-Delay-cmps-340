@@ -51,9 +51,10 @@ def main():
             print("8. Convert data to DataFrame (Module tmp)")
             print("9. Calculate Statistics (Module tmp)")
             print("10. Process Data with Lambda (Module tmp)")
-            print("11. Exit")
+            print("11. Show delay histogram (Parent - visualize_delay_histogram)")  
+            print("12. Exit")
 
-            choice = input("\nEnter your choice (1-11): ")
+            choice = input("\nEnter your choice (1-12): ")
             
             if choice == "1":
                 column = input("Enter the column name (e.g., 'carrier_name'): ")
@@ -112,8 +113,14 @@ def main():
                     print(f"\nProcessed result: {result:.2f}")
                 else:
                     print("Column not found in dataset")
-                    
             elif choice == "11":
+                # Display available column names for the histogram
+                print("Available columns for histogram:")
+                print(", ".join(child_visualizer.data_df.columns))  # Print available column names
+                column = input("Enter the column name for the histogram (e.g., 'arr_delay'): ")
+                parent_handler.visualize_delay_histogram(column)
+       
+            elif choice == "12":
                 logging.info("Exiting the application.")
                 print("Goodbye!")
                 break
