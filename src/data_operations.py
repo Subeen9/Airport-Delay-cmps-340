@@ -4,13 +4,13 @@ import matplotlib.pyplot as plt
 from .config import region_mapping
 from .data_management import DataHandler
 import pandas as pd
-from .module_tmp import DataProcessor, calculate_stats
+
 
 # child
 class DataVisualizer(DataHandler):
     def __init__(self, config):
         super().__init__(config)
-        self.processor = DataProcessor()  # Add DataProcessor instance
+      
         
         # Check for region_mapping
         if "region_mapping" not in config:
@@ -28,17 +28,7 @@ class DataVisualizer(DataHandler):
             print(f"Error loading data: {e}")
             self.data_df = pd.DataFrame()
     
-    def analyze_column(self, column_name):
-        """New method using module_tmp functionality"""
-        if column_name in self.data_df.columns:
-            data = self.data_df[column_name].dropna().tolist()
-            stats = {
-                'mean': calculate_stats(data, 'mean'),
-                'median': calculate_stats(data, 'median'),
-                'lambda_process': self.processor.process_with_lambda(data)
-            }
-            return stats
-        return None
+    
 
     def categorize_airports(self):
         """Map airport codes to their respective regions."""
@@ -137,10 +127,13 @@ class DataVisualizer(DataHandler):
 
         # Save the plot to Output folder
         self.save_plot(f"scatter_{x_column}_vs_{y_column}")
-
-    def query_data(self, column_name, condition):
-        """Query data using Boolean indexing for numeric and string columns while reusing parent's query_data."""
-        if self.data_df.empty:
+    
+    def query_data(self, column_name, condition, value):
+        """
+         Query data using Boolean indexing based on a given condition.
+    
+         """
+        if self.data_df is None or self.data_df.empty:
             print("Error: No data loaded to query.")
             return pd.DataFrame()
 
@@ -148,19 +141,34 @@ class DataVisualizer(DataHandler):
             print(f"Column '{column_name}' not found in the dataset.")
             return pd.DataFrame()
 
-        filtered_data = super().query_data(column_name, condition)
+    # Create a boolean mask based on the condition
+        try:
+            if condition == '>':
+                result_df = self.data_df[self.data_df[column_name] > value]
+            elif condition == '<':
+                result_df = self.data_df[self.data_df[column_name] < value]
+            elif condition == '==':
+                result_df = self.data_df[self.data_df[column_name] == value]
+            elif condition == '!=':
+                result_df = self.data_df[self.data_df[column_name] != value]
+            elif condition == '>=':
+                result_df = self.data_df[self.data_df[column_name] >= value]
+            elif condition == '<=':
+                result_df = self.data_df[self.data_df[column_name] <= value]
+            else:
+                print(f"Unsupported condition '{condition}'. Please use one of: '>', '<', '==', '!=', '>=', '<='.")
+                return pd.DataFrame()
+        except Exception as e:
+            print(f"Error applying condition: {e}")
+            return pd.DataFrame()
 
-        if filtered_data.empty:
-            return filtered_data  
-        if self.data_df[column_name].dtype == 'object' or self.data_df[column_name].dtype.name == 'category':
-            
-            condition_mask = self.data_df[column_name].apply(lambda x: eval(f"'{x}' {condition}") if pd.notna(x) else False)
+        if result_df.empty:
+            print("No data matched the query.")
         else:
-            condition_mask = self.data_df[column_name].apply(lambda x: eval(f"{x} {condition}") if pd.notna(x) else False)
+            print(f"Query returned {len(result_df)} rows.")
+    
+        return result_df
 
-        filtered_data = self.data_df[condition_mask]
-        print(f"Query successful! {len(filtered_data)} rows found.")
-        return filtered_data
 
     def save_plot(self, plot_name):
         """Helper method to save plots in the Output directory."""
