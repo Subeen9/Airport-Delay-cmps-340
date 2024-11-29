@@ -121,6 +121,22 @@ class DataHandler:
 
         # Close the plot
         plt.close()
+    def visualize_delay_histogram(self, column):
+        if self.data_df is not None:
+            if column in self.data_df.columns:
+                plt.figure(figsize=(10, 6))
+                self.data_df[column].dropna().plot(kind='hist', bins=30, color='skyblue', edgecolor='black')
+                plt.title(f'Distribution of {column}')
+                plt.xlabel(column)
+                plt.ylabel('Frequency')
+                plt.grid(True)
+                plt.tight_layout()
+                plt.show()
+            else:
+                print(f"Column '{column}' not found in the dataset.")
+        else:
+            print("Data not loaded. Please load the data first.")
+
 
     def visualize_column(self, column_name):
         """Visualize data for a given column using a line plot and save the image."""
