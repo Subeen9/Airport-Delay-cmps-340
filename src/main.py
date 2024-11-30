@@ -3,6 +3,7 @@ from .data_operations import DataVisualizer
 from .stats_analyzer import AdvanceCalculations
 from .probability_calc import ProbabilityCalculations
 from .permutations_combinations import Permutations_Combination_Calculator
+from .vector_operations import VectorOperations
 from .config import DATA_PATH, DEFAULT_COLUMNS, region_mapping
 import logging
 
@@ -47,6 +48,8 @@ def main():
 
         probability_calc = ProbabilityCalculations(config)
         probability_calc.load_data()
+        vector_ops = VectorOperations(config)
+        vector_ops.load_data()
         
         permutation_combination_calc = Permutations_Combination_Calculator(config)
         permutation_combination_calc.load_data()
@@ -183,11 +186,32 @@ def main():
                 else:
                     print("Invalid choice. Returning to main menu.")
 
-            elif choice == "12":
-                column1 = input("Enter the first column name for vector operation (e.g., 'arr_delay'): ")
-                column2 = input("Enter the second column name for vector operation (e.g., 'weather_delay'): ")
-                advance_analysis.base_vector_operation(column1, column2)
+            if choice == "12":
+                try:
+                    print("\nAvailable numeric columns:")
+                    numeric_columns = vector_ops.data.select_dtypes(include=['number']).columns
+                    print(", ".join(numeric_columns))
 
+                    column1 = input("Enter the first numeric column (e.g., 'arr_delay'): ").strip()
+                    column2 = input("Enter the second numeric column (e.g., 'arr_flights'): ").strip()
+
+                    if column1 not in numeric_columns or column2 not in numeric_columns:
+                        print("Error: One or both columns not found in numeric columns.")
+                        continue
+
+                    results, vector1, vector2 = vector_ops.perform_vector_operations(column1, column2)
+                    
+                    print("\nInput Vectors:")
+                    print(f"Vector 1 ({column1}): {vector1}")
+                    print(f"Vector 2 ({column2}): {vector2}")
+                    
+                    print("\nVector Operation Results:")
+                    for key, value in results.items():
+                        print(f"{key}: {value}")
+                
+                except Exception as e:
+                    print(f"An error occurred during vector operations: {e}")
+                    logging.error(f"Vector operations error: {e}")
             elif choice == "13":
                 print("Available columns for histogram:")
                 print(", ".join(child_visualizer.data_df.columns))
@@ -236,10 +260,21 @@ def main():
                 logging.warning("Invalid choice entered.")
                 print("Invalid choice. Please try again.")
 
-        except Exception as e:
-            logging.error(f"Error occurred: {e}")
-            print(f"An error occurred: {e}")
+        except Exception as e:  
+            logging.error(f"Error occurred: {e}")  
+            print(f"An error occurred: {e}")  
 
 
 if __name__ == "__main__":
     main()
+
+
+
+
+
+
+
+
+
+
+
