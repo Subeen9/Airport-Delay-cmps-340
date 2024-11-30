@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+import math
 
 class AdvanceCalculations:
     def __init__(self, config):
@@ -55,7 +56,7 @@ class AdvanceCalculations:
         """
         self.validate_column(column)
         std_value = self.data[column].std()
-        print(f"Standard Deviatian of column '{column}' : {std_value}")
+        print(f"Standard Deviation of column '{column}' : {std_value}")
         return std_value
 
     # --------------------
@@ -71,6 +72,51 @@ class AdvanceCalculations:
         prob_value = self.data.groupby([col1, col2]).size().unstack(fill_value=0)
         print(f"Probability is  {prob_value}")
         return prob_value
+
+    # --------------------
+    # Permutation_Combination Utilities
+    # --------------------
+
+    def get_unique_values_count(self, column):
+        """
+        Get the count of unique values in a column.
+        
+        Args:
+        - column: Name of the column to analyze
+        
+        Returns:
+        - Number of unique values in the column
+        """
+        self.validate_column(column)
+        return len(self.data[column].unique())
+
+    def get_value_frequencies(self, column):
+        """
+        Get frequency distribution of values in a column.
+        
+        Args:
+        - column: Name of the column to analyze
+        
+        Returns:
+        - Series with value frequencies
+        """
+        self.validate_column(column)
+        return self.data[column].value_counts()
+
+    def factorial(self, n):
+        """
+        Calculate factorial of a number.
+        Utility method for combinatorics calculations.
+        
+        Args:
+        - n: Number to calculate factorial for
+        
+        Returns:
+        - Factorial of n
+        """
+        if not isinstance(n, int) or n < 0:
+            raise ValueError("Factorial is only defined for non-negative integers")
+        return math.factorial(n)
 
     # --------------------
     # Vector Operations
