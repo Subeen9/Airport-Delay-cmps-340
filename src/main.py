@@ -74,7 +74,7 @@ def main():
             print("11. Perform probability calculations (ProbabilityCalculations)")
             print("12. Perform vector operations")
             print("13. Show delay histogram (Parent - visualize_delay_histogram)")
-            print("14. Perform combinatorics analysis on categorical data")
+            print("14. Perform permutation & combination on categorical data")
             print("15. Exit")
 
             choice = input("\nEnter your choice (1-15): ")

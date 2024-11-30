@@ -6,11 +6,9 @@ from .data_management import DataHandler
 
 
 class DataVisualizer(DataHandler):
-    def __init__(self, config):
+    def __init__(self):
         """Initialize DataVisualizer with parent's configuration."""
-        super().__init__(config)
-        if "region_mapping" not in config:
-            raise ValueError("Missing region_mapping in config")
+        super().__init__()
 
     def categorize_airports(self):
         """Map airport codes to their respective regions."""
