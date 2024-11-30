@@ -2,6 +2,7 @@ from .data_management import DataHandler
 from .data_operations import DataVisualizer
 from .stats_analyzer import AdvanceCalculations
 from .probability_calc import ProbabilityCalculations
+from .permutations_combinations import Permutations_Combination_Calculator
 from .config import DATA_PATH, DEFAULT_COLUMNS, region_mapping
 import logging
 
@@ -27,25 +28,28 @@ def main():
     setup_logging()
     logging.info("Starting the application.")
 
-    config = {
+    # Initialize classes
+    try:
+        parent_handler = DataHandler()
+        parent_handler.load_data()
+
+        child_visualizer = DataVisualizer()
+        child_visualizer.data_df = parent_handler.data_df
+        
+        config = {
         "DATA_PATH": DATA_PATH,
         "DEFAULT_COLUMNS": DEFAULT_COLUMNS,
         "region_mapping": region_mapping
     }
-
-    # Initialize classes
-    try:
-        parent_handler = DataHandler(config)
-        parent_handler.load_data()
-
-        child_visualizer = DataVisualizer(config)
-        child_visualizer.data_df = parent_handler.data_df
 
         advance_analysis = AdvanceCalculations(config)
         advance_analysis.load_data()
 
         probability_calc = ProbabilityCalculations(config)
         probability_calc.load_data()
+        
+        permutation_combination_calc = Permutations_Combination_Calculator(config)
+        permutation_combination_calc.load_data()
 
         logging.info("Data loaded successfully.")
     except Exception as e:
@@ -70,9 +74,10 @@ def main():
             print("11. Perform probability calculations (ProbabilityCalculations)")
             print("12. Perform vector operations")
             print("13. Show delay histogram (Parent - visualize_delay_histogram)")
-            print("14. Exit")
+            print("14. Perform permutation & combination on categorical data")
+            print("15. Exit")
 
-            choice = input("\nEnter your choice (1-14): ")
+            choice = input("\nEnter your choice (1-15): ")
 
             if choice == "1":
                 column = input("Enter the column name for carrier frequencies (e.g., 'carrier_name'): ")
@@ -106,12 +111,12 @@ def main():
                 child_visualizer.plot_violin(column)
 
             elif choice == "6":
-                column = input("Enter the column name for the box plot (e.g., 'dep_delay'): ")
+                column = input("Enter the column name for the box plot (e.g., 'weather_delay'): ")
                 child_visualizer.plot_box(column)
 
             elif choice == "7":
                 x_col = input("Enter the x-axis column name (e.g., 'arr_delay'): ")
-                y_col = input("Enter the y-axis column name (e.g., 'dep_delay'): ")
+                y_col = input("Enter the y-axis column name (e.g., 'weather_delay'): ")
                 child_visualizer.plot_scatter(x_col, y_col)
 
             elif choice == "8":
@@ -141,7 +146,7 @@ def main():
                 print(f"Median of {column}: {median_value}")
 
             elif choice == "10":
-                column = input("Enter the column name for standard deviation (e.g., 'dep_delay'): ")
+                column = input("Enter the column name for standard deviation (e.g., 'weather_delay'): ")
                 std_value = advance_analysis.calculate_std(column)
                 print(f"Standard Deviation of {column}: {std_value}")
 
@@ -180,7 +185,7 @@ def main():
 
             elif choice == "12":
                 column1 = input("Enter the first column name for vector operation (e.g., 'arr_delay'): ")
-                column2 = input("Enter the second column name for vector operation (e.g., 'dep_delay'): ")
+                column2 = input("Enter the second column name for vector operation (e.g., 'weather_delay'): ")
                 advance_analysis.base_vector_operation(column1, column2)
 
             elif choice == "13":
@@ -188,8 +193,41 @@ def main():
                 print(", ".join(child_visualizer.data_df.columns))
                 column = input("Enter the column name for the histogram (e.g., 'arr_delay'): ")
                 parent_handler.visualize_delay_histogram(column)
-
+            
             elif choice == "14":
+                print("\nCombinatorics Analysis Menu:")
+                print("1. Analyze Categorical Column")
+                print("2. Back to Main Menu")
+
+                comb_choice = input("Enter your choice (1-2): ")
+
+                if comb_choice == "1":
+                    print("\nAvailable categorical columns:")
+                    print(", ".join(permutation_combination_calc.data.select_dtypes(include=['object']).columns))
+                    column = input("Enter the categorical column name to analyze: ")
+                    
+                    # Get unique values and their count
+                    unique_values = permutation_combination_calc.get_unique_values_count(column)
+                    print(f"\nNumber of unique values in {column}: {unique_values}")
+                    print("Unique values:", permutation_combination_calc.data[column].unique())
+
+                    # Calculate permutations and combinations
+                    r = int(input("\nEnter r (number of items to select): "))
+                    
+                    perm_result = permutation_combination_calc.calculate_permutation(unique_values, r)
+                    comb_result = permutation_combination_calc.calculate_combination(unique_values, r)
+                    
+                    print(f"\nResults for column '{column}':")
+                    print(f"Permutations P({unique_values},{r}): {perm_result}")
+                    print(f"Combinations C({unique_values},{r}): {comb_result}")
+
+                elif comb_choice == "2":
+                    print("Returning to main menu.")
+                    
+                else:
+                    print("Invalid choice. Returning to main menu.")
+
+            elif choice == "15":
                 logging.info("Exiting the application.")
                 print("Goodbye!")
                 break
