@@ -1,7 +1,17 @@
-import seaborn as sns
-import matplotlib.pyplot as plt
+#%% MODULE BEGINS
+# module_name = "data_operations.py"
+
+#%% IMPORTS   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+# Standard Library Imports
 import os
+
+# Third-Party Library Imports
 import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Relative Imports
 from .data_management import DataHandler
 
 
@@ -15,10 +25,10 @@ class DataVisualizer(DataHandler):
         if self.data_df is None or self.data_df.empty:
             print("Error: No data loaded to process.")
             return
-        
+    # Utilizes Configuration constants    
         airport_to_region = {
             airport: region
-            for region, airports in self.config["region_mapping"].items()
+            for region, airports in self.region_mapping.items()
             for airport in airports
         }
         

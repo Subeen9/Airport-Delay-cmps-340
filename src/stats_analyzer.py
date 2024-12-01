@@ -1,6 +1,16 @@
+#%% MODULE BEGINS
+# module_name = "stats_analyzer.py"
+
+#%% IMPORTS   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+# Standard Library Imports
+import math
+from pathlib import Path
+
+# Third-Party Library Imports
 import pandas as pd
 import numpy as np
-import math
+
 
 class AdvanceCalculations:
     def __init__(self, config):
@@ -56,7 +66,7 @@ class AdvanceCalculations:
         """
         self.validate_column(column)
         std_value = self.data[column].std()
-        print(f"Standard Deviation of column '{column}' : {std_value}")
+        print(f"Standard Deviatian of column '{column}' : {std_value}")
         return std_value
 
     # --------------------
@@ -72,7 +82,7 @@ class AdvanceCalculations:
         prob_value = self.data.groupby([col1, col2]).size().unstack(fill_value=0)
         print(f"Probability is  {prob_value}")
         return prob_value
-
+    
     # --------------------
     # Permutation_Combination Utilities
     # --------------------
