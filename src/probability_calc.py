@@ -20,6 +20,7 @@ class ProbabilityCalculations(AdvanceCalculations):
     Features:
     - Calculates mean, median, and standard deviation and saves results.
     - Computes joint probabilities and conditional probabilities for all combinations.
+    - Calculates and saves weighted mean.
     """
     def __init__(self, config):
         """
@@ -69,6 +70,42 @@ class ProbabilityCalculations(AdvanceCalculations):
         })
         self.save_to_output(f"{column}_std.csv", result_data)
         return std_value
+
+    def calculate_weighted_mean(self, column, weights_column):
+        """
+        Calculate the weighted mean for a given column using specified weights and save the result.
+        
+        Args:
+        - column (str): Name of the column for which to calculate the weighted mean.
+        - weights_column (str): Name of the column containing weights.
+
+        Returns:
+        - float: Weighted mean value.
+        """
+        if self.data is None or self.data.empty:
+            raise ValueError("Data is not loaded or is empty.")
+
+        if column not in self.data.columns or weights_column not in self.data.columns:
+            raise KeyError(f"Columns '{column}' or '{weights_column}' not found in the dataset.")
+
+        # Calculate weighted mean
+        try:
+            weights = self.data[weights_column]
+            values = self.data[column]
+            weighted_mean = (values * weights).sum() / weights.sum()
+
+            # Save result to Output folder
+            result_data = pd.DataFrame({
+                "Statistic": ["Weighted Mean"],
+                "Column": [column],
+                "Weights Column": [weights_column],
+                "Value": [weighted_mean]
+            })
+
+            self.save_to_output(f"{column}_weighted_mean.csv", result_data)
+            return weighted_mean
+        except Exception as e:
+            raise ValueError(f"Error calculating weighted mean: {e}")
 
     def calculate_joint_probability(self, col1, col2):
         """
