@@ -1,5 +1,15 @@
+#%% MODULE BEGINS
+# module_name = "probability_calc.py"
+
+#%% IMPORTS   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+# Standard Library Imports
 import os
+
+
+# Third-Party Library Imports
 import pandas as pd
+# Relative Imports
 from .stats_analyzer import AdvanceCalculations
 
 

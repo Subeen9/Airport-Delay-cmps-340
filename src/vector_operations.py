@@ -1,7 +1,18 @@
-import numpy as np # type: ignore
+#%% MODULE BEGINS
+# module_name = "advanced_data_processing.py"
+
+#%% IMPORTS   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+# Standard Library Imports
 import os
-import pandas as pd # type: ignore
+
+# Third-Party Library Imports
+import numpy as np  # type: ignore
+import pandas as pd  # type: ignore
+
+# Relative Imports
 from .stats_analyzer import AdvanceCalculations
+
 
 
 class VectorOperations(AdvanceCalculations):

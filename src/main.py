@@ -1,13 +1,42 @@
+#%% MODULE BEGINS
+# module_name = "main"
+
+"""
+Version: v1.0
+
+Description:
+    Main script for the Airport Data Analysis application. Initializes modules, handles user interaction, 
+    and provides a menu-driven interface for various analysis functionalities.
+
+Authors: Subin Bista, Aakash Poudel, Niraj Bhatta, Satyam Pathak
+    
+Date Created: November 13, 2024
+Date Last Updated: November 30, 2024
+
+
+"""
+
+#%% IMPORTS   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+import os
+
+#
+
+# Custom imports
 from .data_management import DataHandler
 from .data_operations import DataVisualizer
 from .stats_analyzer import AdvanceCalculations
 from .probability_calc import ProbabilityCalculations
 from .permutations_combinations import Permutations_Combination_Calculator
 from .vector_operations import VectorOperations
-from .config import DATA_PATH, DEFAULT_COLUMNS, region_mapping
+from .config import DATA_PATH 
+
+# Standard imports
 import logging
 
+#%% CONSTANTS   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+LOG_FILE = "app.log"
 
+#%% CONFIGURATION   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 def setup_logging():
     """
     Set up logging configuration for the application.
@@ -16,12 +45,12 @@ def setup_logging():
         level=logging.DEBUG,
         format="%(asctime)s - %(levelname)s - %(message)s",
         handlers=[
-            logging.FileHandler("app.log"),
+            logging.FileHandler(LOG_FILE),
             logging.StreamHandler()
         ]
     )
 
-
+#%% FUNCTION DEFINITIONS   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 def main():
     """
     Main function for the Airport Data Analysis application.
@@ -31,32 +60,32 @@ def main():
 
     # Initialize classes
     try:
+        # Parent handler initialization
         parent_handler = DataHandler()
         parent_handler.load_data()
 
+        # Child visualizer initialization
         child_visualizer = DataVisualizer()
         child_visualizer.data_df = parent_handler.data_df
-        
-        config = {
-        "DATA_PATH": DATA_PATH,
-        "DEFAULT_COLUMNS": DEFAULT_COLUMNS,
-        "region_mapping": region_mapping
-    }
 
+        # Configuration setup for dependent modules
+        config = {
+            "DATA_PATH": DATA_PATH,
+        }
+
+        # Module-specific initializations
         advance_analysis = AdvanceCalculations(config)
         advance_analysis.load_data()
-
         probability_calc = ProbabilityCalculations(config)
         probability_calc.load_data()
         vector_ops = VectorOperations(config)
-        vector_ops.load_data()
-        
         permutation_combination_calc = Permutations_Combination_Calculator(config)
         permutation_combination_calc.load_data()
+        
 
-        logging.info("Data loaded successfully.")
+        logging.info("Data and modules initialized successfully.")
     except Exception as e:
-        logging.error(f"Error during initialization: {e}")
+        logging.error(f"Initialization error: {e}")
         print("An error occurred during initialization. Exiting.")
         return
 
@@ -81,17 +110,17 @@ def main():
             print("15. Exit")
 
             choice = input("\nEnter your choice (1-15): ")
-
+            # Carrier Frequency Calculation. Creates Multiple line plot
             if choice == "1":
                 column = input("Enter the column name for carrier frequencies (e.g., 'carrier_name'): ")
                 parent_handler.visualize_column(column)
-
+            # Creates single line plot for delay types
             elif choice == "2":
                 parent_handler.visualize_delays()
-
+            # Query the delay by airlines.
             elif choice == "3":
                 parent_handler.query_arrival_delays_by_carrier()
-
+            # Query data using boolean indexing
             elif choice == "4":
                 column = input("Enter the column name to query (e.g., 'arr_delay'): ")
                 raw_condition = input("Enter the condition and value (e.g., '> 10'): ").strip()
@@ -108,20 +137,20 @@ def main():
                     print(filtered_data)
                 else:
                     print("No matching data found.")
-
+        # Visualizes with violin plot
             elif choice == "5":
                 column = input("Enter the column name for the violin plot (e.g., 'arr_delay'): ")
                 child_visualizer.plot_violin(column)
-
+        # Visualizes with box plot
             elif choice == "6":
                 column = input("Enter the column name for the box plot (e.g., 'weather_delay'): ")
                 child_visualizer.plot_box(column)
-
+        # Visualizes with scatter plot
             elif choice == "7":
                 x_col = input("Enter the x-axis column name (e.g., 'arr_delay'): ")
                 y_col = input("Enter the y-axis column name (e.g., 'weather_delay'): ")
                 child_visualizer.plot_scatter(x_col, y_col)
-
+        #Arithmetic Mean and Weighted Mean Calculation
             elif choice == "8":
                 print("\nMean Calculation Options:")
                 print("1. Calculate Simple Mean")
@@ -142,17 +171,17 @@ def main():
 
                 else:
                     print("Invalid choice. Returning to main menu.")
-
+            # Median Calculation
             elif choice == "9":
                 column = input("Enter the column name for median (e.g., 'arr_delay'): ")
                 median_value = advance_analysis.calculate_median(column)
                 print(f"Median of {column}: {median_value}")
-
+        # Standard Deviation Calculation
             elif choice == "10":
                 column = input("Enter the column name for standard deviation (e.g., 'weather_delay'): ")
                 std_value = advance_analysis.calculate_std(column)
                 print(f"Standard Deviation of {column}: {std_value}")
-
+        # Different Probability Calculation
             elif choice == "11":
                 print("\nProbability Calculations Menu:")
                 print("1. Calculate Joint Probability")
@@ -185,7 +214,7 @@ def main():
 
                 else:
                     print("Invalid choice. Returning to main menu.")
-
+        # Vector Operations
             if choice == "12":
                 try:
                     print("\nAvailable numeric columns:")
@@ -212,12 +241,14 @@ def main():
                 except Exception as e:
                     print(f"An error occurred during vector operations: {e}")
                     logging.error(f"Vector operations error: {e}")
+        # Histogram Visualization
             elif choice == "13":
                 print("Available columns for histogram:")
                 print(", ".join(child_visualizer.data_df.columns))
                 column = input("Enter the column name for the histogram (e.g., 'arr_delay'): ")
                 parent_handler.visualize_delay_histogram(column)
-            
+                
+        # Permuatation and Combination Calculation 
             elif choice == "14":
                 print("\nCombinatorics Analysis Menu:")
                 print("1. Analyze Categorical Column")

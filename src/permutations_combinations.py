@@ -2,6 +2,7 @@ import os
 import pandas as pd
 from .stats_analyzer import AdvanceCalculations
 
+
 class Permutations_Combination_Calculator(AdvanceCalculations):
     """
     Extends AdvanceCalculations to add functionality for permutations and combinations calculations.
@@ -73,6 +74,20 @@ class Permutations_Combination_Calculator(AdvanceCalculations):
         result = n ** r
         self._save_result("permutation_with_repetition", n, r, result)
         return result
+
+    def get_unique_values_count(self, column):
+        """
+        Get the count of unique values in the specified column.
+
+        Args:
+        - column: Name of the column to analyze.
+
+        Returns:
+        - Count of unique values in the column.
+        """
+        if column not in self.data.columns:
+            raise ValueError(f"Column '{column}' not found in the dataset.")
+        return self.data[column].nunique()
 
     def calculate_combination_with_repetition(self, n, r):
         """

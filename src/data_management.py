@@ -1,7 +1,15 @@
-import pandas as pd
-import matplotlib.pyplot as plt
+#%% MODULE BEGINS
+# module_name = "data_management.py"
+
+#%% IMPORTS   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+# Standard Library Imports
 import os
 from pathlib import Path
+
+# Third-Party Library Imports
+import pandas as pd
+import matplotlib.pyplot as plt
 
 
 class DataHandler:
