@@ -6,9 +6,9 @@
 # Standard Library Imports
 import os
 
-
 # Third-Party Library Imports
 import pandas as pd
+import numpy as np
 # Relative Imports
 from .stats_analyzer import AdvanceCalculations
 
@@ -34,9 +34,10 @@ class ProbabilityCalculations(AdvanceCalculations):
 
     def calculate_mean(self, column):
         """
-        Override the parent method to calculate the mean and save the result.
+        Override the parent method to calculate the mean using eval() and save the result.
         """
-        mean_value = super().calculate_mean(column)
+        # Using eval() to calculate mean
+        mean_value = eval("np.mean(x)", {"np": np, "x": self.data[column].values})
         result_data = pd.DataFrame({
             "Statistic": ["Mean"],
             "Column": [column],
@@ -47,9 +48,11 @@ class ProbabilityCalculations(AdvanceCalculations):
 
     def calculate_median(self, column):
         """
-        Override the parent method to calculate the median and save the result.
+        Override the parent method to calculate the median using a lambda function and save the result.
         """
-        median_value = super().calculate_median(column)
+        # Using lambda to calculate median
+        median_func = lambda x: np.median(x)
+        median_value = median_func(self.data[column].values)
         result_data = pd.DataFrame({
             "Statistic": ["Median"],
             "Column": [column],
@@ -60,9 +63,10 @@ class ProbabilityCalculations(AdvanceCalculations):
 
     def calculate_std(self, column):
         """
-        Override the parent method to calculate the standard deviation and save the result.
+        Override the parent method to calculate the standard deviation using eval() and save the result.
         """
-        std_value = super().calculate_std(column)
+        # Using eval() to calculate standard deviation
+        std_value = eval("np.std(x)", {"np": np, "x": self.data[column].values})
         result_data = pd.DataFrame({
             "Statistic": ["Standard Deviation"],
             "Column": [column],
@@ -73,14 +77,7 @@ class ProbabilityCalculations(AdvanceCalculations):
 
     def calculate_weighted_mean(self, column, weights_column):
         """
-        Calculate the weighted mean for a given column using specified weights and save the result.
-        
-        Args:
-        - column (str): Name of the column for which to calculate the weighted mean.
-        - weights_column (str): Name of the column containing weights.
-
-        Returns:
-        - float: Weighted mean value.
+        Calculate the weighted mean using lambda function and save the result.
         """
         if self.data is None or self.data.empty:
             raise ValueError("Data is not loaded or is empty.")
@@ -88,13 +85,11 @@ class ProbabilityCalculations(AdvanceCalculations):
         if column not in self.data.columns or weights_column not in self.data.columns:
             raise KeyError(f"Columns '{column}' or '{weights_column}' not found in the dataset.")
 
-        # Calculate weighted mean
         try:
-            weights = self.data[weights_column]
-            values = self.data[column]
-            weighted_mean = (values * weights).sum() / weights.sum()
+            # Using lambda for weighted mean calculation
+            weighted_mean_func = lambda v, w: (v * w).sum() / w.sum()
+            weighted_mean = weighted_mean_func(self.data[column], self.data[weights_column])
 
-            # Save result to Output folder
             result_data = pd.DataFrame({
                 "Statistic": ["Weighted Mean"],
                 "Column": [column],
@@ -109,22 +104,25 @@ class ProbabilityCalculations(AdvanceCalculations):
 
     def calculate_joint_probability(self, col1, col2):
         """
-        Calculate joint probabilities P(A and B) for all combinations of two columns.
+        Calculate joint probabilities using eval() for the final calculation.
         """
         joint_counts = self.calculate_joint_counts(col1, col2)
         total_samples = self.data.shape[0]
-        joint_prob = joint_counts / total_samples
+        # Using eval() for probability calculation
+        joint_prob = eval("counts / total", {"counts": joint_counts, "total": total_samples})
         print(f"Joint Probability Table:\n{joint_prob}")
         self.save_to_output(f"{col1}_{col2}_joint_probability.csv", joint_prob)
         return joint_prob
 
     def calculate_conditional_probability(self, col1, col2):
         """
-        Calculate conditional probabilities P(col1 | col2) for all combinations.
+        Calculate conditional probabilities using lambda for division operation.
         """
         joint_counts = self.calculate_joint_counts(col1, col2)
         marginal_col2 = joint_counts.sum(axis=1)
-        conditional_probs = joint_counts.div(marginal_col2, axis=0).fillna(0)
+        # Using lambda for conditional probability calculation
+        cond_prob_func = lambda joint, marginal: joint.div(marginal, axis=0).fillna(0)
+        conditional_probs = cond_prob_func(joint_counts, marginal_col2)
         print(f"Conditional Probability Table P({col1} | {col2}):\n{conditional_probs}")
         self.save_to_output(f"{col1}_{col2}_conditional_probability.csv", conditional_probs)
         return conditional_probs
