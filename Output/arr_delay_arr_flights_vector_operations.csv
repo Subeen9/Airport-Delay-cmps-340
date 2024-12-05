@@ -1,0 +1,10 @@
+Operation,Result
+Addition,[1464.  861.  828. ...    6. 1400.  853.]
+Subtraction,[1286.  737.  704. ...   -6. 1294.  689.]
+Dot Product,234380329537.0
+Element-wise Multiplication,[122375.  49538.  47492. ...      0.  71391.  63222.]
+Vector 1 Magnitude,2117283.7155043725
+Vector 2 Magnitude,120117.33324545629
+Angle (radians),0.39864664107656117
+Angle (degrees),22.840770050753516
+Orthogonal,False
