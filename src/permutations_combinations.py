@@ -24,17 +24,23 @@ class Permutations_Combination_Calculator(AdvanceCalculations):
         super().__init__(config)
         self.output_folder = "Output"
 
-    def calculate_permutation(self, n, r):
+    def calculate_permutation(self, *args, **kwargs):
         """
         Calculate the number of permutations P(n,r) - ordering matters.
         
         Args:
-        - n: Total number of items
-        - r: Number of items being arranged
+        - *args: Accepts n, r as positional arguments
+        - **kwargs: Accepts named arguments (n=value, r=value)
         
         Returns:
         - Number of possible permutations
         """
+        if len(args) == 2:
+            n, r = args
+        else:
+            n = kwargs.get('n')
+            r = kwargs.get('r')
+            
         if n < r:
             raise ValueError("n must be greater than or equal to r")
         
@@ -42,17 +48,23 @@ class Permutations_Combination_Calculator(AdvanceCalculations):
         self._save_result("permutation", n, r, result)
         return result
 
-    def calculate_combination(self, n, r):
+    def calculate_combination(self, *args, **kwargs):
         """
         Calculate the number of combinations C(n,r) - ordering doesn't matter.
         
         Args:
-        - n: Total number of items
-        - r: Number of items being chosen
+        - *args: Accepts n, r as positional arguments
+        - **kwargs: Accepts named arguments (n=value, r=value)
         
         Returns:
         - Number of possible combinations
         """
+        if len(args) == 2:
+            n, r = args
+        else:
+            n = kwargs.get('n')
+            r = kwargs.get('r')
+            
         if n < r:
             raise ValueError("n must be greater than or equal to r")
         
@@ -60,17 +72,23 @@ class Permutations_Combination_Calculator(AdvanceCalculations):
         self._save_result("combination", n, r, result)
         return result
 
-    def calculate_permutation_with_repetition(self, n, r):
+    def calculate_permutation_with_repetition(self, *args, **kwargs):
         """
         Calculate permutations where repetition is allowed.
         
         Args:
-        - n: Number of distinct items
-        - r: Length of arrangement
+        - *args: Accepts n, r as positional arguments
+        - **kwargs: Accepts named arguments (n=value, r=value)
         
         Returns:
         - Number of possible permutations with repetition
         """
+        if len(args) == 2:
+            n, r = args
+        else:
+            n = kwargs.get('n')
+            r = kwargs.get('r')
+            
         result = n ** r
         self._save_result("permutation_with_repetition", n, r, result)
         return result
@@ -89,31 +107,40 @@ class Permutations_Combination_Calculator(AdvanceCalculations):
             raise ValueError(f"Column '{column}' not found in the dataset.")
         return self.data[column].nunique()
 
-    def calculate_combination_with_repetition(self, n, r):
+    def calculate_combination_with_repetition(self, *args, **kwargs):
         """
         Calculate combinations where repetition is allowed.
         
         Args:
-        - n: Number of distinct items
-        - r: Number of items being chosen
+        - *args: Accepts n, r as positional arguments
+        - **kwargs: Accepts named arguments (n=value, r=value)
         
         Returns:
         - Number of possible combinations with repetition
         """
+        if len(args) == 2:
+            n, r = args
+        else:
+            n = kwargs.get('n')
+            r = kwargs.get('r')
+            
         result = self.factorial(n + r - 1) // (self.factorial(r) * self.factorial(n - 1))
         self._save_result("combination_with_repetition", n, r, result)
         return result
 
-    def calculate_circular_permutation(self, n):
+    def calculate_circular_permutation(self, *args, **kwargs):
         """
         Calculate circular permutations (necklace arrangements).
         
         Args:
-        - n: Number of items
+        - *args: Accepts n as positional argument
+        - **kwargs: Accepts named argument (n=value)
         
         Returns:
         - Number of possible circular permutations
         """
+        n = args[0] if args else kwargs.get('n')
+        
         if n < 1:
             raise ValueError("n must be at least 1")
             
@@ -121,17 +148,23 @@ class Permutations_Combination_Calculator(AdvanceCalculations):
         self._save_result("circular_permutation", n, None, result)
         return result
 
-    def analyze_column_combinations(self, column, r):
+    def analyze_column_combinations(self, *args, **kwargs):
         """
         Analyze possible combinations of unique values in a column.
         
         Args:
-        - column: Name of the column to analyze
-        - r: Size of combinations to calculate
+        - *args: Accepts column, r as positional arguments
+        - **kwargs: Accepts named arguments (column=value, r=value)
         
         Returns:
         - DataFrame with combination analysis results
         """
+        if len(args) == 2:
+            column, r = args
+        else:
+            column = kwargs.get('column')
+            r = kwargs.get('r')
+            
         self.validate_column(column)
         unique_values = self.get_unique_values_count(column)
         
@@ -147,16 +180,19 @@ class Permutations_Combination_Calculator(AdvanceCalculations):
         self.save_to_output(f"{column}_combination_analysis.csv", results_df)
         return results_df
 
-    def calculate_permutations_from_frequencies(self, frequencies):
+    def calculate_permutations_from_frequencies(self, *args, **kwargs):
         """
         Calculate permutations when items have repetitions.
         
         Args:
-        - frequencies: List or dict of item frequencies
+        - *args: Accepts frequencies as positional argument
+        - **kwargs: Accepts frequencies as named argument
         
         Returns:
         - Number of unique permutations
         """
+        frequencies = args[0] if args else kwargs.get('frequencies')
+        
         if isinstance(frequencies, dict):
             frequencies = list(frequencies.values())
             
