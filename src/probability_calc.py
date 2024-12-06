@@ -9,6 +9,7 @@ import os
 # Third-Party Library Imports
 import pandas as pd
 import numpy as np
+
 # Relative Imports
 from .stats_analyzer import AdvanceCalculations
 
@@ -34,45 +35,47 @@ class ProbabilityCalculations(AdvanceCalculations):
 
     def calculate_mean(self, column):
         """
-        Override the parent method to calculate the mean using eval() and save the result.
+        Calculate the mean using saved pickle data if available, otherwise calculate, save, and return it.
         """
-        # Using eval() to calculate mean
-        mean_value = eval("np.mean(x)", {"np": np, "x": self.data[column].values})
-        result_data = pd.DataFrame({
-            "Statistic": ["Mean"],
-            "Column": [column],
-            "Value": [mean_value]
-        })
-        self.save_to_output(f"{column}_mean.csv", result_data)
+        # Attempt to load the mean from the pickle file
+        mean_value = self.load_stats_from_pickle(column, 'mean')
+        if mean_value is not None:
+            print(f"Loaded mean of column '{column}' from pickle: {mean_value}")
+        else:
+            print(f"Mean not found in pickle. Calculating mean for column '{column}'.")
+            mean_value = self.data[column].mean()
+            # Save to pickle
+            self.save_stats_to_pickle(column, 'mean', mean_value)
         return mean_value
 
     def calculate_median(self, column):
         """
-        Override the parent method to calculate the median using a lambda function and save the result.
+        Calculate the median using saved pickle data if available, otherwise calculate, save, and return it.
         """
-        # Using lambda to calculate median
-        median_func = lambda x: np.median(x)
-        median_value = median_func(self.data[column].values)
-        result_data = pd.DataFrame({
-            "Statistic": ["Median"],
-            "Column": [column],
-            "Value": [median_value]
-        })
-        self.save_to_output(f"{column}_median.csv", result_data)
+        # Attempt to load the median from the pickle file
+        median_value = self.load_stats_from_pickle(column, 'median')
+        if median_value is not None:
+            print(f"Loaded median of column '{column}' from pickle: {median_value}")
+        else:
+            print(f"Median not found in pickle. Calculating median for column '{column}'.")
+            median_value = self.data[column].median()
+            # Save to pickle
+            self.save_stats_to_pickle(column, 'median', median_value)
         return median_value
 
     def calculate_std(self, column):
         """
-        Override the parent method to calculate the standard deviation using eval() and save the result.
+        Calculate the standard deviation using saved pickle data if available, otherwise calculate, save, and return it.
         """
-        # Using eval() to calculate standard deviation
-        std_value = eval("np.std(x)", {"np": np, "x": self.data[column].values})
-        result_data = pd.DataFrame({
-            "Statistic": ["Standard Deviation"],
-            "Column": [column],
-            "Value": [std_value]
-        })
-        self.save_to_output(f"{column}_std.csv", result_data)
+        # Attempt to load the standard deviation from the pickle file
+        std_value = self.load_stats_from_pickle(column, 'std')
+        if std_value is not None:
+            print(f"Loaded standard deviation of column '{column}' from pickle: {std_value}")
+        else:
+            print(f"Standard deviation not found in pickle. Calculating standard deviation for column '{column}'.")
+            std_value = self.data[column].std()
+            # Save to pickle
+            self.save_stats_to_pickle(column, 'std', std_value)
         return std_value
 
     def calculate_weighted_mean(self, column, weights_column):

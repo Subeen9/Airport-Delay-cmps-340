@@ -28,7 +28,7 @@ from .stats_analyzer import AdvanceCalculations
 from .probability_calc import ProbabilityCalculations
 from .permutations_combinations import Permutations_Combination_Calculator
 from .vector_operations import VectorOperations
-from .config import DATA_PATH 
+from .config import DATA_PATH, OUTPUT_FOLDER
 
 # Standard imports
 import logging
@@ -71,6 +71,7 @@ def main():
         # Configuration setup for dependent modules
         config = {
             "DATA_PATH": DATA_PATH,
+            "OUTPUT_FOLDER": OUTPUT_FOLDER
         }
 
         # Module-specific initializations
@@ -286,10 +287,6 @@ def main():
                 logging.info("Exiting the application.")
                 print("Goodbye!")
                 break
-
-            else:
-                logging.warning("Invalid choice entered.")
-                print("Invalid choice. Please try again.")
 
         except Exception as e:  
             logging.error(f"Error occurred: {e}")  
