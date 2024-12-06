@@ -6,6 +6,7 @@ SRC_DIR = Path(__file__).parent
 
 # Go up one level to the project root and then into the data directory
 DATA_PATH = os.path.abspath(os.path.join(SRC_DIR.parent, 'Input', 'airline_delay_2023.csv'))
+OUTPUT_FOLDER = os.path.abspath(os.path.join(SRC_DIR.parent, 'Output'))
 
 # Default columns
 # This is now accessed through data_management(parent) class.

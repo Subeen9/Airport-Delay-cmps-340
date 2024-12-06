@@ -29,13 +29,13 @@ class VectorOperations(AdvanceCalculations):
         self.data = None
         self.load_data()
 
-    def load_data(self):
-        """Load data from the configured path."""
-        try:
-            self.data = pd.read_csv(self.config["DATA_PATH"])
-            return self.data
-        except Exception as e:
-            raise Exception(f"Error loading data: {e}")
+    # def load_data(self):
+    #     """Load data from the configured path."""
+    #     try:
+    #         self.data = pd.read_csv(self.config["DATA_PATH"])
+    #         return self.data
+    #     except Exception as e:
+    #         raise Exception(f"Error loading data: {e}")
 
     def validate_vectors(self, vector1, vector2):
         """Validate vectors before operations."""
